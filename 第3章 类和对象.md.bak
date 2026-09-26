@@ -1,0 +1,1716 @@
+# 第三章 类和对象
+
+## 3.1 类和对象的基本概念
+
+1、现实世界的事物所具有的共性就是每个事物都具有自身的属性，一些自身具有的行为，例如一个学生有姓名、性别、年龄等属性，吃饭睡觉玩游戏等行为。C++提供了类的概念，可以将某一类事物的所有属性和行为封装在一个class中。
+
+2、类对于某个事物的描述其实还是抽象的，例如有一类事物有姓名、性别、年龄等属性，可以吃饭睡觉玩游戏等行为，如果只是这么描述的话其实我们是不知道这个事物具体是什么样的，因为这个类没有告诉我们每个属性具体的值是多少（这个事物的姓名是什么，年龄是多少），所以类只是对某一类事物的一个描述而已。实际应用中我们需要操作某类事物中一个或者多个具体的事物。那么这个具体的事物我们就称之为对象。
+
+3、类是抽象的，对象是具象的。
+
+4、对象是怎么来的呢？由类实例化而来。因此我们也说通过一个类实例化一个对象。
+
+## 3.2 类的定义
+
+属性：变量
+
+行为：函数/方法
+
+```cpp
+class 类名
+{
+访问控制符:
+    成员变量 //属性;
+    成员函数 //方法
+
+};
+```
+
+> 访问控制符有三种：public，private，protected
+
+实例：定义一个类描述一种动物
+
+```cpp
+class CAnimal
+{
+public:
+        //属性
+	char name[32]; //名字
+	int age; //年龄
+
+        //方法
+	void jiaojiaojiao(char *voice) //描述动物叫的行为，voice为叫的声音
+        {
+		cout << name << voice << endl;
+	}
+};
+```
+
+> 注意：1、访问控制符我们先使用public，后面再探讨访问控制符的作用
+>
+> 2、一般在类的名字首字母处大写
+
+## 3.3 类的基本使用
+
+### 3.3.1 对象的实例化
+
+1、实例化普通对象
+
+```cpp
+类名  对象名称;
+CAnimal DaGou; //DaGou就是一个CAnimal的实例化对象
+```
+
+2、使用数组实例化多个普通对象
+
+```cpp
+类名  数组名[数组长度];
+CAnimal DaGous[10]; //实例化10个CAnimal的实例化对象
+```
+
+3、定义一个指针变量
+
+```cpp
+类名  *对象名称;
+CAnimal *DaGou; //*cat就是一个指针变量，可以指向一个CAnimal的实例化对象
+```
+
+注意：指针变量不是类的实例化对象！本质是个指针！！也就是说定义一个类类型的指针变量根本就没有实例化一个对象
+
+4、说明：对象的实例化方法远不止以上说的。
+
+### 3.3.2 成员变量和成员函数的访问
+
+1、普通对象
+
+```cpp
+//普通对象使用据点符号访问成员变量和成员函数
+CAnimal cat; //构造一个CAnimal类的实例化对象
+cat.age = 1;
+cat.jiao("miao miao");
+```
+
+2、指针变量
+
+```cpp
+//指针使用->访问成员变量和成员函数
+CAnimal cat; //构造一个CAnimal类的实例化对象
+CAnimal *p = &cat;
+p->age = 1;
+p->jiao("miao miao");
+```
+
+总结：对象中成员变量和成员函数的访问与结构体访问成员变量的方法类似。
+
+```cpp
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+using namespace std;
+
+class CAnimal
+{
+public:
+	char name[32];
+	int age;
+	char sex;
+
+	void jiao(char *voice) 
+    {
+		cout << name << voice << endl;
+	}
+};
+
+int main(int argc, char *argv[])
+{
+	//CAnimal：类 cat：对象
+	CAnimal cat; //构造一个CAnimal类的实例化对象
+	cat.age = 1;
+	memset(cat.name, 0, sizeof(cat.name));
+    strcpy(cat.name, "小花");
+	//cin >> cat.age;
+   // cout << cat.name << endl;
+	//cout << cat.age << endl;
+	cat.jiao("miao");
+
+         return 0;
+}
+```
+
+### 3.3.3 类成员的访问控制
+
+1、在C++中可以给成员变量和成员函数定义访问级别。
+
+* public 公有的， 修饰成员变量和成员函数可以在类的内部和类的外部被访问
+* private 私有的， 修饰成员变量和成员函数只能在类的内部被访问
+* protected  被保护的，修饰成员变量和函数只能在类的内部被访问
+
+```cpp
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+using namespace std;
+
+class Teacher
+{
+	public:
+		char name[20];
+        private:
+		int _age;
+		char _sex;
+};
+int main()
+{
+    Teacher t;
+    strcpy(t.name, "lisi");
+
+    //t._age = 30; //错误的
+  
+    return 0;
+}
+```
+
+> **思考：为什么有时候需要将成员变量或者成员函数的访问控制权限设置为private?**
+
+为了保障某些属性的“安全”，我们常常将该属性定义为private， 对象只能通过类中的public方法访问private属性，例如：
+
+```cpp
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+using namespace std;
+
+class Teacher
+{
+	public:
+		char name[20];
+        private:
+		int _age;
+		char _sex;
+        public:
+                void set_age(int age){_age = age;}
+};
+int main()
+{
+    Teacher t;
+    strcpy(t.name, "lisi");
+
+    //t._age = 30; //错误的
+    t.set_age(-10000);
+    return 0;
+}
+```
+
+以上代码依然可以通过t.set_age(-10000)将age属性的值设置为一个不合理的值！
+
+所以，**我们一般的需要在set_age对参数的合法性进行检查。**
+
+```cpp
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+using namespace std;
+
+class Teacher
+{
+	public:
+		char name[20];
+        private:
+		int _age;
+		char _sex;
+        public:
+                void set_age(int age){
+                     if (age > 200 || age < 0)
+                     {
+                          cout << "age error" << endl;
+                          return ;
+                     }
+                    _age = age;
+                 }
+};
+
+int main()
+{
+    Teacher t;
+    strcpy(t.name, "lisi");
+
+    //t._age = 30; //错误的
+    t.set_age(-10000);
+    return 0;
+}
+```
+
+## 3.4  面向对象程序设计方法
+
+1、面向过程程序设计：数据结构 + 算法
+
+* 用户需求简单而固定
+
+特点：
+
+* 分析解决问题所需要的步骤
+* 利用函数实现各个步骤
+* 依次调用函数解决问题
+
+问题：
+
+* 软件可重用性差
+* 软件可维护性差
+
+2、面向对象程序设计：由现实世界建立软件模型
+
+* 属性：静态特征，可以用某种数据来描述
+* 方法：动态特征，对象所表现的行为或具有的功能
+
+将现实世界中的事物直接映射到程序中，可直接满足用户需求
+
+特点：
+
+* 直接分析用户需求中涉及的各个实体
+* 在代码中描述现实世界中的实体
+* 在代码中关联各个实体协同工作解决问题
+
+优势：
+
+* 构建的软件能够适应用户需求的不断变化
+
+3、面向对象三大特征
+
+* 封装
+  * 把变量（属性）和函数（操作）合成一个整体，封装在一个类中
+  * 尽可能隐蔽对象的内部细节。对外形成一个边界（或者说一道屏障），只保留有限的对外接口使之与外部发生联系
+  * 对变量和函数进行访问控制，保证数据的安全性
+* 继承
+* 多态
+
+## 3.5 面向对象程序设计实例
+
+1、编写程序实现如下功能：求某一个立方体的体积
+
+2、将类的声明和实现分开
+
+头文件：Box.h
+
+```cpp
+#ifndef CODE_BOX_H
+#define CODE_BOX_H
+//声明Box类
+class Box
+{
+private:
+    //属性
+    int _len;
+    int _w;
+    int _h;
+
+    int _s;
+    int _v;
+public:
+    //声明方法
+    bool set_len(int len);
+    bool set_w(int w);
+    bool set_h(int h);
+
+    int get_len();
+    int get_w();
+    int get_h();
+
+    int get_s();
+    int get_v();
+};
+#endif //CODE_BOX_H
+
+```
+
+源文件：Box.cpp
+
+```cpp
+
+#include "Box.h"
+#include <iostream>
+
+using namespace std;
+
+//在类的外部实现类中的成员函数
+bool Box::set_len(int len) {
+    if (len <= 0 || len > 100)
+    {
+        cout << "len error" << endl;
+        return false;
+    }
+    _len = len;
+    return true;
+}
+
+bool Box::set_w(int w)
+{
+    if (w <= 0 || w > 100)
+    {
+        cout << "w error" << endl;
+        return false;
+    }
+    _w = w;
+    return true;
+}
+
+bool Box::set_h(int h)
+{
+    if (h <= 0 || h > 100)
+    {
+        cout << "h error" << endl;
+        return false;
+    }
+    _h = h;
+    return true;
+}
+
+int Box::get_len()
+{return _len;}
+
+int Box::get_w()
+{return _w;}
+
+int Box::get_h()
+{return _h;}
+
+int Box::get_s()
+{
+    _s= _len * _w;
+    return _s;
+}
+
+int Box::get_v()
+{
+    // _v =  _len*_w*_h;
+    _v = get_s()*_h;
+    return _v;
+}
+
+```
+
+## 3.6 对象的构造
+
+### 3.6.1 前言
+
+创建一个对象时，常常需要作某些初始化的工作，例如对数据成员赋初值。注意，类的数据成员是不能在声明类时初始化的。
+
+为了解决这个问题，C++编译器提供了构造函数(constructor)来处理对象的初始化。构造函数是一种特殊的成员函数，与其他成员函数不同，不需要用户来调用它，而是在建立对象时自动执行。
+
+### 3.6.2 构造函数
+
+1、构造函数定义：
+
+* C++中的类可以定义与类名相同的特殊成员函数，这种与类名相同的成员函数叫做构造函数
+* 构造函数在定义时可以有参数，也可以没有参数
+* 没有任何返回类型的声明
+
+2、无参构造函数
+
+```cpp
+class Animal
+{
+	public:
+		char name[20];
+		int age;
+
+	public:
+		/*默认构造函数， 无参
+		  如果coder没有自己定义，会自动生成
+		*/
+		Animal() 
+		{cout<<"Animal()"<< endl;}
+};
+```
+
+无参构造函数的调用时机：
+
+> Animal a, b;
+>
+> Animal x[4];
+
+注意：以下方法不会调用无参构造函数
+
+**Animal a(); //不是构造对象，而是代表声明一个函数！！**
+
+3、有参构造函数
+
+```cpp
+class Animal
+{
+	public:
+		char name[20];
+		int age;
+
+	public:
+		/*默认构造函数， 无参
+		  如果coder没有自己定义，会自动生成
+		*/
+		Animal() 
+		{cout<<"Animal()"<< endl;}
+
+		/*
+			带参数的构造函数
+			构造对象的时候传递一个参数时会自动调用
+		*/
+		Animal(int _age) 
+		{
+			cout<<"Animal(int _age)"<< endl;
+			age = _age;
+		}
+
+		/*
+			带参数的构造函数
+			构造对象的时候传递2个参数时会自动调用
+		*/
+		Animal(char *_name, int _age) 
+		{
+			cout<<"Animal(char *_name, int _age)"<< endl;
+			age = _age;
+			memset(name, 0, sizeof(name));
+			strcpy(name, _name);
+		}
+};
+
+```
+
+有参构造函数的调用时机:
+
+> Animal a2(10); //调用Animal(int _age)函数
+>
+> Animal a3("小黄", 3); //调用Animal(char *_name, int _age)
+
+4、注意：如果在类中实现了带参数的构造函数，一定要实现一个无参的构造函数，因为如果在构造对象时不带参数将无法找到无参的构造函数导致编译失败。
+
+5、初始化成员列表
+
+* 由逗号分隔的初始化列表组成（前面带冒号）
+* 位于参数列表的右括号之后、函数体左括号之前
+* 如果数据成员的名称为mdata，并需要将它初始化为val，则初始化器为mdata(val)
+
+```cpp
+Box(int x, int y, int z):length(x),width(y),height(z)
+{
+	cout << "CBox(int x, int y, int z)" << endl;
+	//	length = x;
+	//	width = y;
+	//	height = z;
+}
+```
+
+> 初始化成员列表什么时候必须要使用呢？
+>
+> 1、成员变量是引用的时候
+>
+> 2、成员变量被const修饰的时候
+>
+> 3、成员变量是另外一个类的实例化对象，且对应的类中没有实现无参构造函数的时候
+
+举例说明:
+
+```cpp
+#include <iostream>
+
+using  namespace std;
+
+class C
+{
+public:
+    int x;
+
+    C(int a)
+    {
+        x = a;
+    }
+};
+
+class Box
+{
+public:
+    //无参构造函数 默认构造函数
+
+    Box():p(_len),sum(100),n(100) //n(100)在构造n对象的时候传参，会调用C(int)有参的构造函数，从而绕过了调用C(){}无参构造函数
+    {
+        cout << "Box()" << endl;
+        //对成员变量进行初始化: 设置一些默认值
+        _len = 10;
+        _w = 10;
+        _h = 10;
+//        p = _len; //不是定义引用了，对引用的对象进行赋值 还是没有初始化！！
+    //    sum = 1000; //也不叫初始化，叫赋值
+    }
+
+    //有参构造函数
+    Box(int len, int w, int h):_len(len), _w(w), _h(h),p(_len),sum(100),n(100)
+    {
+        cout << "Box(int len, int w, int h)" << endl;
+     //   _len = len;
+     //   _w = w;
+      //  _h = h;
+    }
+
+    Box(int len, int w):p(_len),sum(100),n(100)
+    {
+        cout << "Box(int len, int w)" << endl;
+        _len = len;
+        _w = w;
+        _h = 10;
+    }
+
+    int get_len(){return _len;}
+    int get_w() {return _w;}
+    int get_h() {return _h;}
+
+private:
+    int _len;
+    int _w;
+    int _h;
+
+    int& p;
+    const int sum;
+    C n;
+};
+
+int main() {
+    Box a, b; //自动调用无参（默认）构造函数  a.Box();
+
+   // Box x[4];
+/*
+    Box c(); //不是实例化一个对象，而是声明一个函数 返回值是Box，函数的名字叫做c，函数的形参列表为空
+
+    cout << a.get_len() << endl;
+    cout << a.get_w() << endl;
+    cout << a.get_h() << endl;
+
+    Box b1(20, 10, 10); //自动触发Box(int len, int w, int h)有参构造函数的调用
+    Box b2(20, 10); //自动触发Box(int len, int w)有参构造函数的调用
+
+    Box b3(100, 20, 10);
+    cout << b3.get_len() << endl;
+    cout << b3.get_w() << endl;
+    cout << b3.get_h() << endl;
+*/
+
+    return 0;
+}
+
+
+```
+
+6、使用构造函数设计一个Box类
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Box
+{
+	public:
+		void set_len(int len)
+		{
+			length = len;
+		}
+		void set_wid(int wid = 1)
+		{
+			width = wid;
+		}
+		void set_high(int h = 1)
+		{
+			height = h;
+		}
+		//默认构造函数
+		Box()
+		{
+			cout << "default" << endl;
+			length = 1;
+			width = 1;
+			height = 1;
+		}
+		Box(int x)//构造函数
+		{
+			cout << "CBox(int x)" << endl;
+			length = x;
+		}
+		Box(int x, int y)//构造函数
+		{
+			cout << "CBox(int x, int y)" << endl;
+			length = x;
+			width = y;
+		}
+               //构造函数的高级用法:初始化成员列表
+		Box(int x, int y, int z):length(x),width(y),height(z)
+		{
+			cout << "CBox(int x, int y, int z)" << endl;
+		//	length = x;
+		//	width = y;
+		//	height = z;
+		}
+		int get_len()
+		{
+			return length;
+		}
+		int get_wid()
+		{
+			return width;
+		}
+		int get_high()
+		{
+			return height;
+		}
+	private:
+		int length;
+		int width;
+		int height;
+};
+
+int main(int argc, char *argv[])
+{
+	CBox box;
+	//CBox b1(1);
+	//CBox b2(1, 2);
+	CBox b3(1,2,3);
+
+	box.set_high();
+	cout << box.get_high() << endl;
+	cout << b3.get_high() << endl;
+	//while (1);
+	//box.CBox();
+	//box.set_len(10);
+
+	return 0;
+}
+```
+
+7、总结
+
+> **1）构造一个对象一定会自动调用一个构造函数**
+>
+> **2）如果一个类中没有实现默认构造函数，编译器会自动生成一个，前提是没有实现带参数的构造函数**
+>
+> **3）如果一个类中实现了带参数的构造函数，一定要实现一个无参的构造函数，因为如果在构造对象时不带参数将无法找到无参的构造函数导致编译失败**
+>
+> **4）构造函数可以有多个，根据构造对象时所传递的参数，会自动调用对应的构造函数**
+>
+> **5）类不会占用程序的内存空间，对象才会占用程序的内存空间**
+
+## 3.7 对象的析构
+
+1、析构函数定义及调用
+
+* C++中的类可以定义一个特殊的成员函数清理对象，这个特殊的成员函数叫做析构函数
+  * 语法：~ClassName()
+* 析构函数没有参数也没有任何返回类型的声明
+* 析构函数在对象销毁时自动被调用
+* 析构函数调用机制
+  * C++编译器自动调用
+
+```cpp
+class Animal
+{
+	public:
+		char name[20];
+		int age;
+
+	public:
+                //析构函数
+                ~Animal()
+                {cout << "~Animal()" << endl;}
+};
+
+```
+
+2、析构函数中到底要实现哪些功能呢？
+
+假如类中有成员变量为指针：
+
+```cpp
+class Test
+{
+public:
+    int *p;
+  
+    //构造函数中为指针分配空间
+    Test()
+    {
+        p = (int *)malloc(40); //p = new int[10];
+    }
+};
+```
+
+我们在构造函数中为指针变量p在堆上申请了一段空间，因为堆上的空间需要手动申请手动释放，所以Test对象在销毁时，我们还需要手动释放堆上的空间，我们可以将释放堆空间的操作放在析构函数中！
+
+```cpp
+class Test
+{
+public:
+    int *p;
+  
+    //构造函数中为指针分配空间
+    Test()
+    {
+        p = (int *)malloc(40); //p = new int[10];
+    }
+    ~Test()
+    {
+        free(p);
+        //delete[] p;
+    }
+};
+```
+
+## 3.8 对象的动态建立和释放
+
+### 3.8.1 new和delete基本语法
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Box
+{
+public:
+    int len;
+    int w;
+    int h;
+
+    Box()
+    {cout << "Box()" <<endl;}
+
+    Box(int x, int y, int z):len(x),w(y),h(z)
+    {cout << "Box(int x, int y, int z):len(x),w(y),h(z)" << endl;}
+};
+
+int main() {
+    //在堆上申请一个int类型大小的空间（4Bytes）,并且将申请的堆空间的内容初始化为10
+    int *p = new int(10);
+    delete p;
+    //在堆上申请4个int类型大小的空间（4*sizeof(int)==16Bytes） 4：数组的长度
+    int *p2 = new int[4];
+    for (int i = 0; i < 4; i++)
+    {
+        cout << *(p2 + i) << endl; //cout << p2[i] << endl;
+    }
+    delete[] p2;
+    //在堆上申请一个Box类型大小的空间
+    Box *p3 = new Box; //调用无参的构造函数
+    delete p3;
+    //在堆上申请四个Box类型大小的空间
+    Box *p4 = new Box[4]; //调用无参的构造函数
+    delete[] p4;
+    //在堆上申请一个Box类型大小的空间
+    Box *p5 = new Box(10, 10, 10); //调用带参数的构造函数
+    delete p5;
+
+    return 0;
+}
+
+```
+
+### 3.8.2 new和delete和malloc/free
+
+注意： new和delete是运算符，因此执行效率高。
+
+虽然为了与C语言兼容，C++仍保留malloc和free函数，但不建议用malloc和free函数，而用new和delete运算符。
+
+> new/delete 和 malloc/free有何取别呢？
+> 1、malloc/free为C的标准库函数，new、delete则为C++的操作运算符
+> 2、new能自动计算需要分配的内存空间，而malloc需要手工计算字节数
+> 3、new与delete直接带具体类型的指针，malloc和free返回void类型的指针。
+> 4、new类型是安全的，而malloc不是。例如int *p = new float[2];就会报错；
+> 而int  *p = malloc(2  * sizeof(int))编译时编译器就无法指出错误来。
+> 5、new调用构造函数，malloc不能；delete调用析构函数，而free不能
+> 6、new/delete是操作符可以重载，malloc/free则不能
+
+## 3.9 多个对象构造和析构
+
+1、当类中的成员变量为另外一个类的实例化对象时，我们称这个对象为成员对象
+
+2、成员变量所属的类中没有实现无参构造函数的时候，需要使用初始化成员列表
+
+```cpp
+#include <iostream>
+using namespace std; 
+class ABC
+{
+public:
+    ABC(int a, int b, int c)
+    {
+        cout << "ABC(int a, int b, int c)" <<endl;
+    }
+    ~ABC()
+    {
+       cout << " ~ABC() " << endl;
+    }
+private:
+        int a;
+        int b;
+        int c;
+};
+
+class MyD
+{
+    public:
+         MyD():abc1(1,2,3),abc2(4,5,6)
+        {
+            cout<<"MyD()"<<endl;
+        }
+        ~MyD()
+        {
+            cout<<"~MyD()"<<endl;
+        }
+    private:
+        ABC abc1; //c++编译器不知道如何构造abc1
+        ABC abc2;
+  
+};
+int main()
+{
+    MyD myD;
+  
+    return 0;
+}
+```
+
+2、构造函数与析构函数的调用顺序
+
+1）当类中有成员变量是其它类的对象时，首先调用成员对象的构造函数，调用顺序与声明顺序相同；之后调用自身类的构造函数
+
+2）析构函数的调用顺序与对应的构造函数调用顺序相反
+
+## 3.10 对象的赋值
+
+1、思考：能否使用一个已经构造好的对象去初始化另一个新的对象呢，C++编译器又是如何处理这个操作的呢？
+
+类似于：
+
+```cpp
+A a(10);
+A b = a;
+```
+
+我们来看下面这段程序的运行结果：
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Test
+{
+	public:
+		int *sum;
+		int x;
+		int y;
+
+	Test()
+	{
+		cout << "Test()" << endl;
+		x = 0;
+		y = 0;
+		sum = new int[4];
+	}
+
+	Test(int a, int b):x(a), y(b)
+	{
+		cout << "Test(int a, int b)" << endl;
+		sum = new int[4];
+	}
+};
+
+int main()
+{
+	Test t1(10, 20); //Test t1 = (10, 20);
+	t1.sum[0] = 1;
+	t1.sum[1] = 2;
+	t1.sum[2] = 3;
+	t1.sum[3] = 4;
+	Test t2 = t1;
+	cout << t1.x << " " << t1.y << endl;
+	cout << t2.x << " " << t2.y << endl;
+
+	cout << t1.sum[2] << " " << t2.sum[2] << endl;
+	cout << t1.sum << " " << t2.sum << endl;
+	return 0;
+}
+```
+
+t1.sum的值和t2.sum的值相等，意味着t1.sum 和t2.sum指向了同一块内存空间。
+
+思考：通过这样的方式来构造t2 有什么坏处呢？
+
+t1.sum[2]  = 100;
+
+t2.sum[2] 也会随之变成100
+
+接下来我们用另外一种方式对t1和t2进行构造:
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Test
+{
+	public:
+		int *sum;
+		int x;
+		int y;
+
+	Test()
+	{
+		cout << "Test()" << endl;
+		x = 0;
+		y = 0;
+		sum = new int[4];
+	}
+
+	Test(int a, int b):x(a), y(b)
+	{
+		cout << "Test(int a, int b)" << endl;
+		sum = new int[4];
+	}
+
+	~Test()
+	{
+		cout << "~Test" << endl;
+		delete[] sum;
+	}
+};
+
+int main()
+{
+	//通过new操作符 构造对象（申请空间）
+	Test *t1 = new Test(10, 20);
+
+	t1->sum[0] = 10;
+	t1->sum[1] = 20;
+	t1->sum[2] = 30;
+	t1->sum[3] = 40;
+ 
+	Test *t2 = t1;
+
+	cout << t2->sum[1] << endl;
+	delete t1;
+	cout << t2->sum[1] << endl;
+	//cout << t1->sum << " " << t2->sum << endl;
+	return 0;
+}
+```
+
+发现：
+
+在执行delete t1 语句前和执行后 t2->sum[1]的值是不一样的，因为在t1->sum 和 t2->sum指向的是同一块内存空间，当执行delete t1语句时会自动调用析构函数，在析构函数中delete[] this->sum;将原来在堆山申请的空间释放了，所以t2->sum[1]的值就不是原来的值了。
+
+结论:
+
+用一个构造好的对象使用=可以构造一个新的对象，而且新的对象中的成员变量的值和构造好的对象中的成员变量的值是相等的（实现对象的拷贝）。但是这样做带来的危害是：如果两个类中有成员变量是指针类型，一旦其中一个对象被销毁调用析构函数将指针变量指向的堆空间进行了释放，另外一个对象所操作的指针所执行的堆空间是非法的。
+
+```cpp
+解决方法有两种：
+方法1：
+Test t1(10, 20); //Test t1 = (10, 20);
+t1.sum[0] = 1;
+t1.sum[1] = 2;
+t1.sum[2] = 3;
+t1.sum[3] = 4;
+
+Test t2;
+t2.x = t1.x;
+t2.y = t1.y;
+memcpy(t1.sum, t2.sum, 10*sizeof(int));
+
+方法2：依然使用=
+注意：
+    当我们使用= 用一个构造好的对象初始化一个新的对象时，会自动调用一个拷贝构造函数
+   
+```
+
+## 3.11 拷贝构造函数
+
+1、拷贝构造函数的原型：
+
+> 类名(const 类名 &变量名);
+
+2、拷贝构造函数的调用时机：使用一个构造好的对象初始化一个新的对象
+
+2、完整代码如下：
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Test
+{
+	public:
+		int *sum;
+		int x;
+		int y;
+
+	Test()
+	{
+		cout << "Test()" << endl;
+		x = 0;
+		y = 0;
+		sum = new int[4];
+	}
+
+	Test(int a, int b):x(a), y(b)
+	{
+		cout << "Test(int a, int b)" << endl;
+		sum = new int[4];
+	}
+
+	Test(const Test &t) //拷贝构造函数
+	{
+		cout << "Test(const Test &t)" << endl;
+		//将t对象中的成员变量的值拷贝给新的对象
+		x = t.x;
+		y = t.y;
+		sum = new int[4];
+		memcpy(sum, t.sum, 4*sizeof(int));
+	}
+
+	~Test()
+	{
+		cout << "~Test" << endl;
+		delete[] sum;
+	}
+};
+
+int main()
+{
+	Test t1;
+	t1.sum[0] = 1;
+	t1.sum[1] = 2;
+	t1.sum[2] = 3;
+	t1.sum[3] = 4;
+
+	Test t2 = t1;
+	cout << t1.sum[2] << " " << t2.sum[2] << endl; // 3 3
+
+	t1.sum[2] = 100;
+	cout << t1.sum[2] << " " << t2.sum[2] << endl;// 100 3
+	return 0;
+}
+```
+
+> 为什么拷贝构造函数的形参为引用？
+
+> 为什么拷贝构造函数的形参需要使用const修饰？
+
+## 3.12 深拷贝和浅拷贝
+
+### 3.12.1 浅拷贝
+
+1、同一类型的对象之间可以赋值，使得两个对象的成员变量的值相同，两个对象仍然是独立的两个对象，这种情况被称为**浅拷贝**
+
+2、一般情况下，浅拷贝没有任何副作用，但是当类中有指针，并且指针指向动态分配的内存空间，将导致两个对象的指针变量指向同一块内存空间，当两个对象被销毁时调用析构函数，因为在析构函数中会释放指针所指向的堆空间，造成同一块堆空间被释放两次从而导致程序运行出错。
+
+3、如果我们没有实现拷贝构造函数，C++编译器会自动实现一个拷贝构造函数，我们称之为默认拷贝构造函数，但是在默认拷贝构造函数中实现的时浅拷贝
+
+### 3.12.2 深拷贝
+
+实现拷贝构造函数，在拷贝构造函数中需要对对象中的指针变量进行单独的内存申请。两个对象中的指针变量不会指向同一块内存空间，然后再将右值对象指针所指向的空间中的内容拷贝到新的对象指针所指向的堆空间中。
+
+```cpp
+Test(const Test &t) //拷贝构造函数
+{
+	cout << "Test(const Test &t)" << endl;
+	//将t对象中的成员变量的值拷贝给新的对象
+	x = t.x;
+	y = t.y;
+	sum = new int[4]; //为新的对象的指针变量申请堆空间
+	memcpy(sum, t.sum, 4*sizeof(int)); //将右值对象指针所指向的空间中的内容拷贝到新的对象指针所指向的堆空间中。
+}
+```
+
+### 3.13 引用作为函数形参
+
+1、如果函数的形参为普通对象，那么调用函数时形参对象会被构造，函数调用结束形参对象还需要被销毁
+
+2、为了避免形参对象这种“临时对象”的创建，我们可以将形参设计成引用
+
+```cpp
+#include <iostream>
+#include <Cstdlib>
+#include <Cstring>
+#include <Cwchar>
+
+using namespace std;
+
+class Test {
+public:
+    int *sum;
+    int x;
+    int y;
+
+    Test() {
+        cout << "Test()" << endl;
+        x = 0;
+        y = 0;
+        sum = new int[4];
+    }
+
+    Test(int a, int b) : x(a), y(b)
+    {
+        cout << "Test(int a, int b) : x(a), y(b)" << endl;
+        sum = new int[4];
+    }
+
+    //拷贝构造函数
+    Test(const Test &t) //t 引用的是 右值
+    {
+        cout << "Test(const Test &t)"  << endl;
+        x = t.x;
+        y = t.y;
+        sum = new int[4];
+        //将t.sum 所指向的空间中的内容拷贝到sum所指向的空间中
+        for (int i = 0; i < 4; i++)
+            sum[i] = t.sum[i];
+    }
+    ~Test()
+    {cout << "~Test()" << endl;delete[] sum;
+    }
+};
+
+//void func(Test t) // Test t = t1; 触发拷贝构造函数的调用，而且func函数结束，t对象还需要销毁
+void func(const Test &t) //void func(const Test *t)
+{
+    //t.x = 100; //t->x = 100;
+}
+
+int main() {
+    Test t1(10, 20); //调用构造函数： Test(int a, int b) : x(a), y(b)
+
+    func(t1);
+
+    return 0;
+}
+```
+
+3、如果我们不需要在函数中修改引用的对象可以使用const修饰形参
+
+## 3.14 面向对象内存模型
+
+### 3.14.1 编译器对属性和方法的处理机制
+
+1、在c语言中，“数据”和“处理数据的操作（函数）”是分开来声明的，也就是说，语言本身并没有支“数据和函数”之间的关联性。在c++中，通过抽象数据类型（abstract data type，ADT），在类中定义数据和函数，来实现数据和函数直接的绑定。
+
+2、在对象的内存模型中，“数据”和“处理数据的操作(函数)”是如何存储的呢？
+
+我们来看如下代码:
+
+```cpp
+#include <iostream>
+ 
+using namespace std;
+ 
+class C1
+{
+public:
+    int i;  //4
+    int j; //4
+    int k;  //4
+protected:
+private:
+}; 
+ 
+class C2
+{
+    public:
+        int i; 
+        int j; 
+        int k; 
+    public:
+        int getK() { return k; } 
+        void setK(int val) { k = val; }  
+}; 
+
+int main()
+{
+    C1 c1;
+    C2 c2;
+    cout << sizeof(c1) << endl;
+    cout << sizeof(c2) << endl;
+}
+```
+
+通过上面的案例，我们可以的得出：
+
+> **C++类对象中的成员变量和成员函数是分开存储的**
+
+成员变量：
+
+> 普通成员变量：存储于对象中，与struct变量有相同的内存布局和字节对齐方式
+
+> 静态成员变量：存储于全局数据区中
+
+成员函数：
+
+> 存储于代码段中。
+
+### 3.14.2 this指针
+
+1、很多对象共用一块代码段？程序是如何区分具体对象的呢？
+
+换句话说：``int getK() const { return k; }``，代码是如何区分，具体obj1、obj2、obj3对象的k值？
+
+2、C++编译器会将成员函数的第一个形参设计为this指针，this指针指向了调用成员函数的首地址（指向了成员函数作用的对象），在成员函数执行的过程中，正是通过“this指针”才能找到对象所在的地址，因而也就能找到对象的所有非静态成员变量的地址
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class C1
+{
+public:
+    int i;  //4
+    int j; //4
+    int k;  //4
+protected:
+private:
+};
+
+class C2
+{
+public:
+    int i;
+    int j;
+    int k;
+public:
+    //int getK(C2 * const this) { return this->k; } //this指针指向调用该成员函数的对象
+    int getK() { return k; }
+    void setK(int val) { k = val; }
+};
+
+class ABC
+{
+public:
+    int x, y, z;
+    char name[32];
+   // ABC(ABC *const this, int x, int y, int z)
+    ABC(int x, int y, int z)
+    {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+};
+
+int main()
+{
+  //  C1 c1;
+    C2 c2, c3;
+  //  cout << sizeof(c1) << endl;
+ //   cout << sizeof(c2) << endl;
+    c2.k = 100;
+    c2.getK(); //
+    c3.getK();
+    c2.setK(100);
+
+    ABC a(1,2,3); //ABC(&a, 1, 2, 3);
+    ABC b(1,2,3); //ABC(&b, 1, 2, 3);
+    return 0;
+}
+
+```
+
+3、C++编译器对普通成员函数的内部处理
+
+### 3.14.3 静态成员变量
+
+1、定义静态成员变量
+
+* 关键字 static 可以用于声明一个类的成员，静态成员提供了一个同类对象的共享机制
+* 把一个类的成员声明为 static 时，这个类无论有多少个对象被创建，这些对象共享这个
+
+static 成员
+
+* 静态成员局部于类，它不是对象成员（？）
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int cnt = 0;
+
+class Sheep {
+public:
+    char name[32];
+    int age;
+
+    Sheep()
+    {
+        cout << "Sheep()" << endl;
+        cnt++;
+    }
+
+    ~Sheep()
+    {
+        cnt--;
+    }
+
+    static int cnt; //只是声明了一个静态成员变量，不是类或者对象的成员变量，但是他的作用域是在类和这类的所有的实例化对象
+};
+
+//定义了Sheep这个类中的静态成员变量cnt，并且初始化为0（如果不初始化默认为0）
+int Sheep::cnt = 0;
+
+int main() {
+    //构造了10个Sheep对象: 购买了10头羊
+    Sheep *p = new Sheep[10];
+    cout << Sheep::cnt << endl;
+
+    Sheep s1;
+    cout << s1.cnt << endl;
+
+    Sheep s2;
+
+    cout << sizeof(s2) << endl;
+    cout << Sheep::cnt << endl;
+    cout << s1.cnt << endl;
+    cout << s2.cnt << endl;
+
+    return 0;
+}
+
+```
+
+2、思考：如何验证类中的static成员变量是否属于对象？
+
+> cout &#x3c;&#x3c; sizeof(a) &#x3c;&#x3c; endl;
+
+3、静态成员变量的实际用途是什么呢？
+
+### 3.14.4 类的静态成员函数
+
+1、使用static修饰的成员函数叫做静态成员函数
+
+2、在静态成员函数内不能够访问除静态成员变量以外的其他成员变量
+
+3、静态成员函数的调用：
+
+A、对象.静态成员函数()
+
+B、类名::静态成员函数()
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int cnt = 0;
+
+class Sheep {
+public:
+    char name[32];
+    int age;
+
+    Sheep()
+    {
+        cout << "Sheep()" << endl;
+        cnt++;
+    }
+
+    ~Sheep()
+    {
+        cnt--;
+    }
+
+    //静态的成员函数
+    static int sheep_num() //没有this指针
+    {
+       // cout << age << endl; //静态成员函数中不能访问非静态的成员变量！！！
+        return cnt; //访问静态成员变量
+    }
+
+//public:
+private:
+    static int cnt; //只是声明了一个静态成员变量，不是类或者对象的成员变量，但是他的作用域是在类和这类的所有的实例化对象
+};
+
+//定义了Sheep这个类中的静态成员变量cnt，并且初始化为0（如果不初始化默认为0）
+int Sheep::cnt = 0;
+
+class Math
+{
+public:
+    static void sin(){}
+    static void cos(){}
+    static void tan(){}
+    static void cotan(){}
+};
+
+class searchAlgrithm
+{
+    //二分查找
+};
+
+class sortAlgrithm
+{
+    //冒泡
+    //快排法
+    //堆排序
+};
+
+int main() {
+    //构造了10个Sheep对象: 购买了10头羊
+    Sheep *p = new Sheep[10];
+ //   cout << Sheep::cnt << endl;
+
+    Sheep s1;
+//    cout << s1.cnt << endl;
+
+    Sheep s2;
+
+    cout << sizeof(s2) << endl;
+//    cout << Sheep::cnt << endl;
+//    cout << s1.cnt << endl;
+ //   cout << s2.cnt << endl;
+
+    cout << Sheep::sheep_num() << endl; //建议用类访问静态成员变量和成员函数因为这种访问方式可读性强
+    cout << s1.sheep_num() << endl; //不会：sheep_num(&s1);
+
+    Math::sin();
+
+    return 0;
+}
+
+```
+
+4、思考：为什么静态的成员函数不能够访问对象/类中的成员变量？
+
+因为静态成员函数不属于对象。
+
+5、什么时候可以将函数设计成静态成员函数？
+
+函数的行为跟类的实例无关，只跟类有关
+
+静态成员函数的用处：
+
+* 访问被private/protected修饰静态成员变量
+* 可以实现某些特殊的设计模式：如Singleton（单例模式）
+* 可以封装某些算法，比如数学函数，如ln，sin，tan等等，这些函数本就没必要属于任何一个对象，所以从类上调用感觉更好，比如定义一个数学函数类Math，调用Math::sin(3.14);如果非要用非静态函数，那就必须：Math  math;    math.sin(3.14);行是行，只是不爽：就为了一个根本无状态存储可言的数学函数还要引入一次对象的构造和一次对象的析构，当然不爽。
+
+## 3.15 string类
+
+### 3.15.1 string类简述
+
+在C语言里,字符串是用字符数组来表示的,而对于应用层而言,会经常用到字符串,而继续使用字符数组,就使得效率非常低.所以在C++标准库里,通过**类string**重新自定义了字符串。
+
+头文件: #include <string>
+
+* string直接支持**字符串连接**
+* string直接支持**字符串的大小比较**
+* string直接支持**子串查找和提取**
+* string直接支持字符串的**插入和替换**
+* string同时**具备字符串数组的灵活性** ,可以通过[ ]重载操作符来访问每个字符。
+
+### 3.15.2 常用构造方法
+
+```cpp
+string s1;  // si = ""
+string s2("Hello");  // s2 = "Hello"
+string s3(4, 'K');  // s3 = "KKKK"
+string s4("12345", 1, 3);  //s4 = "234"，即 "12345" 的从下标 1 开始，长度为 3 的子串
+```
+
+string 类没有接收一个整型参数或一个字符型参数的构造函数。下面的两种写法是错误的：
+
+```cpp
+string s1('K');
+string s2(123);
+```
+
+### 3.15.3 对 string 对象赋值
+
+1、可以用 char* 类型的变量、常量，以及 char 类型的变量、常量对 string 对象进行赋值。例如:
+
+```cpp
+        string s;
+	s = "hello";
+
+	char name[32];
+	strcpy(name, "lisi");
+	s = name;
+	cout << s << endl;
+   
+        s= 'A';
+```
+
+2、assign成员函数
+
+```cpp
+string s1("abcdef"), s2;
+s3.assign(s1);  // s3 = s1
+s2.assign(s1, 1, 3);  // s2 = "bcd"，即 s1 的子串(1, 3)
+s2.assign(3, 'A');  // s2 = "AAA"
+```
+
+### 3.15.4 求字符串的长度
+
+length 成员函数和size成员函数返回字符串的长度。
+
+### 3.15.5 字符串的拼接
+
+1、使用运算符 + 拼接两个字符串
+
+```cpp
+	string s1 = "hello";
+	string s2 = "world";
+
+	string s3 = s1 + s2;
+	cout << s3 << endl;
+```
+
+2、使用append成员函数拼接字符串，append函数返回对象自身的引用
+
+```cpp
+string s1("123"), s2("abc");
+s1.append(s2);  // s1 = "123abc"
+s1.append(s2, 1, 2);  // s1 = "123abcbc"
+s1.append(3, 'K');  // s1 = "123abcbcKKK"
+s1.append("ABCDE", 2, 3);  // s1 = "123abcbcKKKCDE"，添加 "ABCDE" 的子串(2, 3)
+```
+
+### 3.15.6 string对象比较大小
+
+1、可以用 &#x3c;、&#x3c;=、==、!=、>=、> 运算符比较 string 对象
+
+2、使用compare 成员函数，compare 成员函数有以下返回值：
+
+* 小于 0 表示当前的字符串小；
+* 等于 0 表示两个字符串相等；
+* 大于 0 表示另一个字符串小。
+
+```cpp
+string s1("hello"), s2("hello, world");
+int n = s1.compare(s2);
+n = s1.compare(1, 2, s2, 0, 3);  //比较s1的子串 (1,2) 和s2的子串 (0,3)
+n = s1.compare(0, 2, s2);  // 比较s1的子串 (0,2) 和 s2
+n = s1.compare("Hello");
+n = s1.compare(1, 2, "Hello");  //比较 s1 的子串(1,2)和"Hello”
+n = s1.compare(1, 2, "Hello", 1, 2);  //比较 s1 的子串(1,2)和 "Hello" 的子串(1,2)
+```
+
+### 3.15.7 求 string 对象的子串
+
+substr 成员函数可以用于求子串 (n, m)，原型如下：
+
+> string substr(int n = 0, int m = string::npos) const;
+
+调用时，如果省略 m 或 m 超过了字符串的长度，则求出来的子串就是从下标 n 开始一直到字符串结束的部分。例如：
+
+```cpp
+string s1 = "this is ok";
+string s2 = s1.substr(2, 4);  // s2 = "is i"
+s2 = s1.substr(2);  // s2 = "is is ok"
+```
+
+### 3.15.8 交换两个string对象的内容
+
+swap 成员函数可以交换两个 string 对象的内容。例如
+
+```cpp
+string s1("hello”), s2("world");
+s1.swap(s2);  // s1 = "world"，s2 = "hello"
+```
+
+### 3.15.9 查找子串和字符
+
+string 类有一些查找子串和字符的成员函数，它们的返回值都是子串或字符在 string 对象字符串中的位置（即下标）。如果查不到，则返回 string::npos。string: :npos 是在 string 类中定义的一个静态常量。这些函数如下：
+
+* find：从前往后查找子串或字符出现的位置。
+* rfind：从后往前查找子串或字符出现的位置。
+* find_first_of：从前往后查找何处出现另一个字符串中包含的字符。例如：
+
+  * s1.find_first_of("abc");  //查找s1中第一次出现"abc"中任一字符的位置，注意不是查找abc出现的位置
+* find_last_of：从后往前查找何处出现另一个字符串中包含的字符。
+* find_first_not_of：从前往后查找何处出现另一个字符串中没有包含的字符。
+* find_last_not_of：从后往前查找何处出现另一个字符串中没有包含的字符。
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+int main()
+{
+    string s1("Source Code");
+    int n;
+    if ((n = s1.find('u')) != string::npos) //查找 u 出现的位置
+        cout << "1) " << n << "," << s1.substr(n) << endl;
+    //输出 l)2,urce Code
+    if ((n = s1.find("Source", 3)) == string::npos)
+        //从下标3开始查找"Source"，找不到
+        cout << "2) " << "Not Found" << endl;  //输出 2) Not Found
+    if ((n = s1.find("Co")) != string::npos)
+        //查找子串"Co"。能找到，返回"Co"的位置
+        cout << "3) " << n << ", " << s1.substr(n) << endl;
+    //输出 3) 7, Code
+    if ((n = s1.find_first_of("ceo")) != string::npos)
+        //查找第一次出现或 'c'、'e'或'o'的位置
+        cout << "4) " << n << ", " << s1.substr(n) << endl;
+    //输出 4) l, ource Code
+    if ((n = s1.find_last_of('e')) != string::npos)
+        //查找最后一个 'e' 的位置
+        cout << "5) " << n << ", " << s1.substr(n) << endl;  //输出 5) 10, e
+    if ((n = s1.find_first_not_of("eou", 1)) != string::npos)
+        //从下标1开始查找第一次出现非 'e'、'o' 或 'u' 字符的位置
+        cout << "6) " << n << ", " << s1.substr(n) << endl;
+    //输出 6) 3, rce Code
+    return 0;
+}
+```
+
+### 3.15.10 替换子串
+
+replace 成员函数可以对 string 对象中的子串进行替换，返回值为对象自身的引用。例如：
+
+```cpp
+string s1("Real Steel");
+s1.replace(1, 3, "123456", 2, 4);  //用 "123456" 的子串(2,4) 替换 s1 的子串(1,3)
+cout << s1 << endl;  //输出 R3456 Steel
+string s2("Harry Potter");
+s2.replace(2, 3, 5, '0');  //用 5 个 '0' 替换子串(2,3)
+cout << s2 << endl;  //输出 HaOOOOO Potter
+int n = s2.find("OOOOO");  //查找子串 "00000" 的位置，n=2
+s2.replace(n, 5, "XXX");  //将子串(n,5)替换为"XXX"
+cout << s2 < < endl;  //输出 HaXXX Potter
+```
+
+### 3.15.11 删除子串
+
+erase 成员函数可以删除 string 对象中的子串，返回值为对象自身的引用。例如：
+
+```cpp
+string s1("Real Steel");
+s1.erase(1, 3);  //删除子串(1, 3)，此后 s1 = "R Steel"
+s1.erase(5);  //删除下标5及其后面的所有字符，此后 s1 = "R Ste"
+```
+
+### 3.15.12 插入字符串
+
+insert 成员函数可以在 string 对象中插入另一个字符串，返回值为对象自身的引用。例如：
+
+```cpp
+string s1("Limitless"), s2("00");
+s1.insert(2, "123");  //在下标 2 处插入字符串"123"，s1 = "Li123mitless"
+s1.insert(3, s2);  //在下标 2 处插入 s2 , s1 = "Li10023mitless"
+s1.insert(3, 5, 'X');  //在下标 3 处插入 5 个 'X'，s1 = "Li1XXXXX0023mitless"
+```
+
+### 3.15.13 字符串分割
+
+参考C语言中的strtok函数
